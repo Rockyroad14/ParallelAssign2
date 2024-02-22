@@ -8,44 +8,56 @@
 #include <mutex>
 #include <queue>
 #include <chrono>
+#include <condition_variable>
 
 using namespace std;
 
 class Showroom
 {
+    private:
+        bool isOccupied;
+        int numPeople;
+        vector<thread> persons;
+        mutex mtx;
+        condition_variable condition;
     public:
         Showroom(int people)
         {
             isOccupied = false;
-            for(int i = 0; i < people; i++)
-            {
-                persons.push_back(thread(enterShowroom));
-            }
-
-            
+            this->numPeople = people;
         }
 
         void enterShowroom()
         {
-            unique_lock lk(mtx);
-
-            conditional.wait(lk, []{ return ready; });
-
-
+             
+            //go or not go 
+            
+            unique_lock <mutex> locker(mtx);
+           
             isOccupied = true;
             this_thread::sleep_for(chrono::seconds(2));
             isOccupied = false;
 
-            lk.unlock();
 
-            conditonal.notify_one();
+            condition.notify_one();
         }
-    
-    private:
-        bool isOccupied;
-        vector<thread> persons;
-        mutex mtx;
-        condition_variable conditonal;
+
+        void beginShowroom()
+        {
+            for(int i = 0; i < numPeople; i++)
+            {
+                persons.emplace_back(thread(&enterShowroom,this));
+            }
+
+            //Randomly decide to que a thread
+            //Somehow make it so that each thread checks if it is the thread being queued 
+            //runs its shit if so
+
+            for(auto& thread : persons)
+            {
+                thread.join();
+            }
+        }
         
 };
 
@@ -53,7 +65,14 @@ class Showroom
 
 
 
-int main(void)
+int main()
 {
+    int people = 0;
+    cout << "Enter number of People: ";
+    cin >> people;
 
+    Showroom showroom(people);
+    showroom.beginShowroom();
+
+    return 0;
 }
