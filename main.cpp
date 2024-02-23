@@ -7,8 +7,10 @@
 
 using namespace std;
 int currentIndex = 0;
-bool cup_cake = true;
+bool cupCake = true;
 int count = 0;
+
+
 
 struct guest
 {
@@ -17,48 +19,46 @@ struct guest
 };
 
 vector<thread> People;
-mutex mtx;
+mutex m;
 condition_variable condition;
+
+void countGuestAction(int id, guest guests[], int N);
 
 int count2 = 0;
 void guestAction(int id, guest guests[], int N)
 {
-    
+    // Mutex
     while(count != N)
     {    
-        mtx.lock();
-        if((cup_cake == false) && (id == currentIndex) && (guests[id].array[1] == false) && (currentIndex != 0))
-        {
-            cout << "NONCOUNTER GUEST " << id << endl;
-            guests[id].array[1] = true;
-            cup_cake = true;
-            count2 += 1;
-        }
-        else if(cup_cake == true && id == 0 && currentIndex == 0)
-        {
-            cout << "COUNTER GUEST " << id << endl;
-            count += 1;
-            cup_cake = false;
-            
-        }
-        mtx.unlock();
+        m.lock();
+        countGuestAction(id, guests, N);
+        m.unlock();
     }
     
    
 }
 
-void countGuestAction()
+void countGuestAction(int id, guest guests[], int N)
 {
-    
+    if((cupCake == false) && (id == currentIndex) && (guests[id].array[1] == false) && (currentIndex != 0))
+    {
+        cout << "NONCOUNTER GUEST " << id << endl;
+        guests[id].array[1] = true;
+        cupCake = true;
+        count2 += 1;
+    }
+    else if(cupCake == true && id == 0 && currentIndex == 0)
+    {
+        cout << "COUNTER GUEST " << id << endl;
+        count += 1;
+        cupCake = false;
+    }
+
 }
 int main()
 {
     
-    int n=0;
-    cout << "Starting sim" << endl;
 
-    cout << "Enter number of Guests: ";
-    cin >> n;
     
     const int N = 10;
     
@@ -98,10 +98,10 @@ int main()
 
     for(int i = 0; i  < N;i++)
     {
-        cout <<"GUEST" << i + 1 << ": hasPlaced " << guests[i].array[1] << endl;
+        cout <<"GUEST" << i + 1 << ": has placed a cupcake?: " << guests[i].array[1] << endl;
     }
     
-    cout << "Simulation finished in " << duration.count() << " milliseconds." << endl;
+
     cout << "All " << count << " guests have been in the labryinth" << endl;
     return 0;
 }
