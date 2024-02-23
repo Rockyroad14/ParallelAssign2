@@ -9,17 +9,18 @@ using namespace std;
 int currentIndex = 0;
 bool cup_cake = true;
 int count = 0;
-const int N = 10;
+int N;
 
 struct guest
 {
-    bool counter=false;
-    bool has_placed=false; 
+    // 0 is if counter, 1 is if hasPlace
+    bool array[2] = {false, false};
 };
+
 guest guests[N];
-vector<thread> threads;
+vector<thread> People;
 mutex mtx;
-condition_variable cv;
+condition_variable condition;
 
 int count2 = 0;
 void guestAction(int id)
@@ -27,10 +28,10 @@ void guestAction(int id)
     while(count != N)
     {    
         mtx.lock();
-        if((cup_cake == false) && (id == currentIndex) && (guests[id].has_placed == false) && (currentIndex != 0))
+        if((cup_cake == false) && (id == currentIndex) && (guests[id].array[1] == false) && (currentIndex != 0))
         {
             cout << "NONCOUNTER GUEST " << id << endl;
-            guests[id].has_placed = true;
+            guests[id].array[1] = true;
             cup_cake = true;
             count2 += 1;
         }
@@ -52,19 +53,17 @@ int main()
     srand((unsigned) time(NULL));
 
     //Designating counter guest
-    guests[0].counter = true;
-    guests[0].has_placed = true; //doesn't matter for the counter
-    threads.push_back(thread(guestAction,0));
+    guests[0].array[0] = true;
+    guests[0].array[1] = true; //doesn't matter for the counter
+    People.push_back(thread(guestAction,0));
 
     //Initialize guests
     for(int i = 1; i < N; i++)
     {
-            guests[i].counter = false;
+            guests[i]. = false;
             guests[i].has_placed = false;
-            threads.push_back(thread(guestAction,i));
+            People.push_back(thread(guestAction,i));
     }
-
-    auto start = chrono::high_resolution_clock::now();
 
     while(count != N)
     {
@@ -75,17 +74,17 @@ int main()
    
 
 
-    for(auto& t : threads)
+    for(auto& Person : People)
         {
-            if(t.joinable())
+            if(Person.joinable())
             {
-                t.join();
+                Person.join();
             }
         }
 
     for(int i = 0; i  < N;i++)
     {
-        cout <<"GUEST" << i << ": hasPlaced " << guests[i].has_placed << endl;
+        cout <<"GUEST" << i + 1 << ": hasPlaced " << guests[i].has_placed << endl;
     }
     auto stop = chrono::high_resolution_clock::now();
     auto duration = chrono::duration_cast<chrono::milliseconds>(stop - start);
