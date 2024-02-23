@@ -48,7 +48,12 @@ void guestAction(int id)
 }
 int main()
 {
+
     cout << "Starting sim" << endl;
+
+    cout << "Enter number of Guests: ";
+    cin >> N;
+
 
     srand((unsigned) time(NULL));
 
@@ -84,7 +89,7 @@ int main()
 
     for(int i = 0; i  < N;i++)
     {
-        cout <<"GUEST" << i + 1 << ": hasPlaced " << guests[i].has_placed << endl;
+        cout <<"GUEST" << i + 1 << ": hasPlaced " << guests[i].array[1] << endl;
     }
     auto stop = chrono::high_resolution_clock::now();
     auto duration = chrono::duration_cast<chrono::milliseconds>(stop - start);
