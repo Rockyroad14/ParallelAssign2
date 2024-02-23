@@ -46,13 +46,12 @@ void guestAction(int id, guest* guests)
 }
 int main()
 {
-
+    int N;
     cout << "Starting sim" << endl;
-    guest guests[N]
 
     cout << "Enter number of Guests: ";
     cin >> N;
-
+    guest guests[N];
 
     srand((unsigned) time(NULL));
 
