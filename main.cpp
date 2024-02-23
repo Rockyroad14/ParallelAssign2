@@ -24,9 +24,11 @@ condition_variable condition;
 void countGuestAction(int id, guest guests[], int N);
 
 int count2 = 0;
+
+// Mutex locking occurs here to make sure no thread can access the same variable at the same time
 void guestAction(int id, guest guests[], int N)
 {
-    // Mutex
+
     while(count != N)
     {    
         m.lock();
@@ -64,14 +66,43 @@ void initializeGuests(guest *guests, int N)
     }
 }
 
+void randomGuestSelector(int N)
+{
+    while(count != N)
+    {
+        // Minotaur picks the next person at random
+        currentIndex = rand() % N;
+    }
+}
+
+void debuggingPrint(guest *guests, int N)
+{
+    for(int i = 0; i  < N;i++)
+    {
+        cout <<"GUEST" << i + 1 << ": has placed a cupcake?: " << guests[i].array[1] << endl;
+    }
+}
+
+void joinThreads()
+{
+    for(auto& Person : People)
+    {
+        if(Person.joinable())
+        {
+            Person.join();
+        }
+    }
+}
+
 int main()
 {
     
-    const int N = 10;
-    
-    guest guests[N];
+    int N;
+    cout << "Enter Number of Guests: ";
+    cin >> N;
 
-    srand((unsigned) time(NULL));
+    guest* guests = (guest*) malloc(sizeof(guest) * N);
+    
 
     //Designating counter guest
     guests[0].array[0] = true;
@@ -81,29 +112,14 @@ int main()
     // Setting the rest of the guests that are not counters.
     initializeGuests(ref(guests), N);
 
-    while(count != N)
-    {
-        // Minotaur picks the next person at random
-        currentIndex = rand() % N;
-    }
+    // Minotaur telling which guests to go in random order.
+    randomGuestSelector(N);
 
-   
-
-
-    for(auto& Person : People)
-        {
-            if(Person.joinable())
-            {
-                Person.join();
-            }
-        }
-
-    for(int i = 0; i  < N;i++)
-    {
-        cout <<"GUEST" << i + 1 << ": has placed a cupcake?: " << guests[i].array[1] << endl;
-    }
-    
+    // join all threads back together.
+    joinThreads();
 
     cout << "All " << count << " guests have been in the labryinth" << endl;
+
+    free(guests);
     return 0;
 }
