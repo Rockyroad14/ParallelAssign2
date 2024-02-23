@@ -58,14 +58,14 @@ int main()
     //Designating counter guest
     guests[0].array[0] = true;
     guests[0].array[1] = true; //doesn't matter for the counter
-    People.push_back(thread(guestAction,0, guests, ref(N));
+    People.push_back(thread(guestAction, 0, guests, ref(N)));
 
     //Initialize guests
     for(int i = 1; i < N; i++)
     {
             guests[i].array[0] = false;
             guests[i].array[1] = false;
-            People.push_back(thread(guestAction,i, guests, ref(N));
+            People.push_back(thread(guestAction,i, guests, ref(N)));
     }
 
     while(count != N)
