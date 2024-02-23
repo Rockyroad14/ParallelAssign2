@@ -21,7 +21,7 @@ mutex mtx;
 condition_variable condition;
 
 int count2 = 0;
-void guestAction(int id, guest* guests, int N)
+void guestAction(int id, guest guests[], int N)
 {
     while(count != N)
     {    
