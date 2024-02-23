@@ -9,7 +9,6 @@ using namespace std;
 int currentIndex = 0;
 bool cup_cake = true;
 int count = 0;
-int N;
 
 struct guest
 {
@@ -17,13 +16,12 @@ struct guest
     bool array[2] = {false, false};
 };
 
-guest guests[N];
 vector<thread> People;
 mutex mtx;
 condition_variable condition;
 
 int count2 = 0;
-void guestAction(int id)
+void guestAction(int id, guest* guests)
 {
     while(count != N)
     {    
@@ -50,6 +48,7 @@ int main()
 {
 
     cout << "Starting sim" << endl;
+    guest guests[N]
 
     cout << "Enter number of Guests: ";
     cin >> N;
@@ -60,14 +59,14 @@ int main()
     //Designating counter guest
     guests[0].array[0] = true;
     guests[0].array[1] = true; //doesn't matter for the counter
-    People.push_back(thread(guestAction,0));
+    People.push_back(thread(guestAction,0, guests));
 
     //Initialize guests
     for(int i = 1; i < N; i++)
     {
             guests[i].array[0] = false;
             guests[i].array[1] = false;
-            People.push_back(thread(guestAction,i));
+            People.push_back(thread(guestAction,i, guests));
     }
 
     while(count != N)
@@ -91,8 +90,7 @@ int main()
     {
         cout <<"GUEST" << i + 1 << ": hasPlaced " << guests[i].array[1] << endl;
     }
-    auto stop = chrono::high_resolution_clock::now();
-    auto duration = chrono::duration_cast<chrono::milliseconds>(stop - start);
+    
     cout << "Simulation finished in " << duration.count() << " milliseconds." << endl;
     cout << "All " << count << " guests have been in the labryinth" << endl;
     return 0;
