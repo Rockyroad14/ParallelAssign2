@@ -62,7 +62,7 @@ void initializeGuests(guest *guests, int N)
     {
         guests[i].array[0] = false;
         guests[i].array[1] = false;
-        People.push_back(thread(guestAction,i, guests, N));
+        People.push_back(thread(guestAction, i, guests, N));
     }
 }
 
