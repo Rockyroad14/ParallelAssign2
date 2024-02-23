@@ -23,6 +23,7 @@ condition_variable condition;
 int count2 = 0;
 void guestAction(int id, guest guests[], int N)
 {
+    /*
     while(count != N)
     {    
         mtx.lock();
@@ -42,11 +43,12 @@ void guestAction(int id, guest guests[], int N)
         }
         mtx.unlock();
     }
+    */
    
 }
 int main()
 {
-    int N;
+    int N=0;
     cout << "Starting sim" << endl;
 
     cout << "Enter number of Guests: ";
