@@ -30,7 +30,7 @@ class Showroom
             this->numPeople = people;
         }
 
-        void enterShowroom()
+        void enterShowroom(int id)
         {
             random_device rd;
             mt19937 gen(rd());
@@ -39,9 +39,12 @@ class Showroom
 
             // Decide if person wants to visit based on randomness.
             if (toGo)
+                cout << "Person " << id << " has decided to go\n";
+            if (toGo)
             {
                 unique_lock <mutex> locker(mtx);
-            
+
+                cout << "Person " << id << " has entered showroom.\n";
                 isOccupied = true;
                 this_thread::sleep_for(chrono::seconds(2));
                 isOccupied = false;
@@ -61,12 +64,8 @@ class Showroom
         {
             for(int i = 0; i < numPeople; i++)
             {
-                persons.emplace_back(thread(&Showroom::enterShowroom, this));
+                persons.emplace_back(thread(&Showroom::enterShowroom, this, i + 1));
             }
-
-            //Randomly decide to que a thread
-            //Somehow make it so that each thread checks if it is the thread being queued 
-            //runs its shit if so
 
             for(auto& thread : persons)
             {
