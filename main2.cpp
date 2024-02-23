@@ -10,7 +10,6 @@
 #include <condition_variable>
 #include <random>
 
-
 using namespace std;
 
 class Showroom
@@ -73,9 +72,6 @@ class Showroom
             }
         }        
 };
-
-
-
 
 
 int main()

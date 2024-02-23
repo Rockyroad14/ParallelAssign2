@@ -6,11 +6,10 @@
 #include <condition_variable>
 
 using namespace std;
+
 int currentIndex = 0;
 bool cupCake = true;
 int count = 0;
-
-
 
 struct guest
 {
@@ -34,7 +33,6 @@ void guestAction(int id, guest guests[], int N)
         countGuestAction(id, guests, N);
         m.unlock();
     }
-    
    
 }
 
@@ -55,10 +53,19 @@ void countGuestAction(int id, guest guests[], int N)
     }
 
 }
+
+void initializeGuests(guest *guests, int N)
+{
+    for(int i = 1; i < N; i++)
+    {
+        guests[i].array[0] = false;
+        guests[i].array[1] = false;
+        People.push_back(thread(guestAction,i, guests, N));
+    }
+}
+
 int main()
 {
-    
-
     
     const int N = 10;
     
@@ -71,13 +78,8 @@ int main()
     guests[0].array[1] = true; //doesn't matter for the counter
     People.push_back(thread(guestAction, 0, guests, N));
 
-    //Initialize guests
-    for(int i = 1; i < N; i++)
-    {
-            guests[i].array[0] = false;
-            guests[i].array[1] = false;
-            People.push_back(thread(guestAction,i, guests, N));
-    }
+    // Setting the rest of the guests that are not counters.
+    initializeGuests(ref(guests), N);
 
     while(count != N)
     {
