@@ -47,7 +47,7 @@ void guestAction(int id)
 }
 int main()
 {
-    cout << "Starting sim...." << endl;
+    cout << "Starting sim" << endl;
 
     srand((unsigned) time(NULL));
 
@@ -68,10 +68,8 @@ int main()
 
     while(count != N)
     {
-        //Generate a random number between 0 and N
+        // Minotaur picks the next person at random
         currentIndex = rand() % N;
-        cout<<"index:"<< currentIndex <<endl;
-        cout <<"Guests Gone:" << count << endl; 
     }
 
    

@@ -50,7 +50,7 @@ class Showroom
                 isOccupied = false;
 
 
-                condition.notify_one();
+                condition.notify_all();
             }
             else
             {
