@@ -60,8 +60,8 @@ int main()
     //Initialize guests
     for(int i = 1; i < N; i++)
     {
-            guests[i]. = false;
-            guests[i].has_placed = false;
+            guests[i].array[0] = false;
+            guests[i].array[1] = false;
             People.push_back(thread(guestAction,i));
     }
 
