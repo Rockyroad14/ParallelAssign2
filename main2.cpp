@@ -29,6 +29,7 @@ class Showroom
             this->numPeople = people;
         }
 
+        // Decides if the Person goes and locks mutex
         void enterShowroom(int id)
         {
             random_device rd;
@@ -58,7 +59,7 @@ class Showroom
             
         }
 
-        
+        // Runs the Showroom class
         void beginShowroom()
         {
             for(int i = 0; i < numPeople; i++)

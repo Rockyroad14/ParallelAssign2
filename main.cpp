@@ -7,9 +7,10 @@
 
 using namespace std;
 
+// Randomness variable: currentIndex
 int currentIndex = 0;
 bool cupCake = true;
-int count = 0;
+int guestCount = 0;
 
 struct guest
 {
@@ -21,15 +22,16 @@ vector<thread> People;
 mutex m;
 condition_variable condition;
 
+// function declaration to allow guestAction to work
 void countGuestAction(int id, guest guests[], int N);
 
-int count2 = 0;
+int debugCount = 0;
 
-// Mutex locking occurs here to make sure no thread can access the same variable at the same time
-void guestAction(int id, guest guests[], int N)
+// Mutex locking occurs here to make sure no thread can access the same variable at the same time 
+void enterLaybrinth(int id, guest guests[], int N)
 {
 
-    while(count != N)
+    while(guestCount != N)
     {    
         m.lock();
         countGuestAction(id, guests, N);
@@ -38,22 +40,22 @@ void guestAction(int id, guest guests[], int N)
    
 }
 
+
 void countGuestAction(int id, guest guests[], int N)
 {
     if((cupCake == false) && (id == currentIndex) && (guests[id].array[1] == false) && (currentIndex != 0))
     {
-        cout << "NONCOUNTER GUEST " << id << endl;
+        cout << "Guest " << id + 1 << endl;
         guests[id].array[1] = true;
         cupCake = true;
-        count2 += 1;
+        debugCount += 1;
     }
     else if(cupCake == true && id == 0 && currentIndex == 0)
     {
-        cout << "COUNTER GUEST " << id << endl;
-        count += 1;
+        cout << "Counter " << id + 1 << endl;
+        guestCount += 1;
         cupCake = false;
     }
-
 }
 
 void initializeGuests(guest *guests, int N)
@@ -62,13 +64,13 @@ void initializeGuests(guest *guests, int N)
     {
         guests[i].array[0] = false;
         guests[i].array[1] = false;
-        People.push_back(thread(guestAction, i, guests, N));
+        People.push_back(thread(enterLaybrinth, i, guests, N));
     }
 }
 
 void randomGuestSelector(int N)
 {
-    while(count != N)
+    while(guestCount != N)
     {
         // Minotaur picks the next person at random
         currentIndex = rand() % N;
@@ -79,7 +81,7 @@ void debuggingPrint(guest *guests, int N)
 {
     for(int i = 0; i  < N;i++)
     {
-        cout <<"GUEST" << i + 1 << ": has placed a cupcake?: " << guests[i].array[1] << endl;
+        cout << "Guest" << i + 1 << ": has placed a cupcake?: " << guests[i].array[1] << endl;
     }
 }
 
@@ -107,7 +109,7 @@ int main()
     //Designating counter guest
     guests[0].array[0] = true;
     guests[0].array[1] = true; //doesn't matter for the counter
-    People.push_back(thread(guestAction, 0, guests, N));
+    People.push_back(thread(enterLaybrinth, 0, guests, N));
 
     // Setting the rest of the guests that are not counters.
     initializeGuests(ref(guests), N);
@@ -118,7 +120,7 @@ int main()
     // join all threads back together.
     joinThreads();
 
-    cout << "All " << count << " guests have been in the labryinth" << endl;
+    cout << "All " << guestCount << " guests were in the labyrinth" << endl;
 
     free(guests);
     return 0;
